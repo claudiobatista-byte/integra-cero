@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matriz de Habilidades Essenciais - 3ª Série EM</title>
+<style>
+  :root{
+    --navy:#1b5e20;--navy-2:#20642a;--navy-deep:#14532d;
+    --gold:#c8a24a;--gold-soft:#e2c98a;
+    --ink:#1d2533;--muted:#5b6678;
+    --line:rgba(200,162,74,.28);--radius:18px;
+    --shadow:0 24px 60px -30px rgba(20,83,45,.42);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"Helvetica Neue",Helvetica,"Segoe UI",sans-serif;
+    color:var(--ink);background:#f7f9f7;line-height:1.7;-webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:clamp(22px,4vw,52px)}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;isolation:isolate;
+    background:linear-gradient(150deg,var(--navy) 0%,var(--navy-deep) 100%);
+    color:#fff;border-radius:24px;overflow:hidden;
+    padding:clamp(32px,5vw,60px);box-shadow:var(--shadow);
+  }
+  .hero::before{content:"";position:absolute;inset:0;z-index:-1;
+    background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.03) 0 2px,transparent 2px 22px);}
+  .hero::after{content:"";position:absolute;right:-90px;top:-90px;width:320px;height:320px;border-radius:50%;
+    background:radial-gradient(circle,rgba(200,162,74,.28),transparent 68%);z-index:-1;}
+  .kicker{display:inline-flex;align-items:center;gap:12px;
+    font-size:.72rem;letter-spacing:.26em;text-transform:uppercase;
+    color:var(--gold-soft);font-weight:700;margin-bottom:16px;}
+  .kicker::before{content:"";width:38px;height:2px;background:var(--gold)}
+  .hero h1{font-family:Georgia,"Times New Roman",serif;font-weight:700;
+    font-size:clamp(2rem,4.8vw,3.1rem);line-height:1.1;letter-spacing:-.6px;}
+  .hero h1 em{color:var(--gold-soft);font-style:italic}
+  .hero p{max-width:66ch;margin-top:16px;color:rgba(255,255,255,.84);font-size:clamp(1rem,1.6vw,1.12rem)}
+  .hero .tag{display:inline-block;margin-top:24px;padding:8px 16px;border:1px solid var(--line);
+    border-radius:999px;font-size:.78rem;letter-spacing:.05em;color:var(--gold-soft);}
+
+  /* ---------- BIMESTRE SELECTOR ---------- */
+  .bim-nav{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin:clamp(28px,4vw,42px) 0 6px}
+  .bim-btn{
+    font:inherit;cursor:pointer;border:1px solid rgba(20,83,45,.16);background:#fff;color:var(--muted);
+    padding:11px 22px;border-radius:999px;font-weight:700;font-size:.85rem;letter-spacing:.02em;
+    transition:transform .2s ease,box-shadow .2s ease,background .2s ease,color .2s ease,border-color .2s ease;
+  }
+  .bim-btn:hover{color:var(--navy);border-color:rgba(20,83,45,.32)}
+  .bim-btn.active{
+    background:linear-gradient(135deg,var(--navy) 0%,var(--navy-deep) 100%);color:#fff;
+    border-color:var(--navy-deep);box-shadow:0 12px 26px -14px rgba(20,83,45,.6);
+  }
+
+  /* ---------- SECTION LABEL ---------- */
+  .sec-label{display:flex;align-items:center;gap:14px;margin:clamp(26px,4vw,38px) 2px 4px}
+  .sec-label span{font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);
+    font-weight:700;white-space:nowrap;}
+  .sec-label::after{content:"";flex:1;height:1px;background:rgba(20,83,45,.14)}
+
+  /* ---------- PANES ---------- */
+  .bim-pane{display:none;animation:fade .4s ease both}
+  .bim-pane.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+  /* ---------- DISCIPLINE CARD ---------- */
+  .disc-card{
+    position:relative;overflow:hidden;background:#fff;
+    border:1px solid rgba(20,83,45,.10);border-radius:20px;
+    box-shadow:0 18px 50px -36px rgba(20,83,45,.45);margin-top:20px;
+    transition:transform .25s ease,box-shadow .25s ease;
+  }
+  .disc-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--gold)}
+  .disc-card:hover{transform:translateY(-3px);box-shadow:0 26px 56px -34px rgba(20,83,45,.5)}
+  .disc-head{
+    display:flex;align-items:center;justify-content:space-between;gap:14px;
+    padding:20px 28px;border-bottom:1px solid rgba(20,83,45,.10);background:rgba(20,83,45,.035);
+  }
+  .disc-head h2{font-family:Georgia,"Times New Roman",serif;color:var(--navy-deep);
+    font-size:1.4rem;letter-spacing:-.3px;line-height:1.1}
+  .disc-badge{flex:none;font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;
+    color:var(--navy-deep);background:rgba(200,162,74,.16);border:1px solid var(--line);
+    padding:5px 11px;border-radius:999px;white-space:nowrap;}
+  .disc-body{padding:24px 28px 28px;display:flex;flex-direction:column;gap:22px}
+
+  .grp{display:flex;flex-direction:column;gap:14px}
+  .grp + .grp{border-top:1px solid rgba(20,83,45,.10);padding-top:20px}
+
+  .skill .code{
+    display:inline-block;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    font-size:.72rem;font-weight:700;letter-spacing:.03em;color:var(--navy-deep);
+    background:rgba(200,162,74,.18);border:1px solid var(--line);
+    padding:3px 9px;border-radius:6px;margin-bottom:8px;
+  }
+  .skill p{color:var(--ink);font-size:.96rem;line-height:1.62}
+
+  .habs-label{font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);
+    font-weight:700;margin-top:4px}
+  .habs{list-style:none;display:flex;flex-direction:column;gap:9px;margin-top:6px}
+  .habs li{position:relative;padding-left:22px;color:#3d5c45;font-size:.92rem;line-height:1.55}
+  .habs li::before{content:"";position:absolute;left:0;top:.62em;width:10px;height:2px;
+    background:var(--gold);border-radius:2px}
+
+  /* ---------- EMPTY STATE ---------- */
+  .empty{
+    margin-top:20px;background:#fff;border:1px dashed var(--line);border-radius:var(--radius);
+    padding:40px 26px;text-align:center;color:var(--muted);
+  }
+  .empty b{color:var(--navy);display:block;font-family:Georgia,serif;font-size:1.15rem;margin-bottom:6px}
+
+  /* ---------- FOOTER ---------- */
+  .footer{text-align:center;margin-top:46px;padding-top:26px;border-top:1px solid rgba(20,83,45,.12);
+    color:var(--muted);font-size:.85rem}
+  .footer b{color:var(--navy)}
+
+  @media (max-width:640px){
+    .disc-head{flex-direction:column;align-items:flex-start;gap:8px}
+    .disc-head,.disc-body{padding-left:22px;padding-right:22px}
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- HERO -->
+    <header class="hero">
+      <span class="kicker">Documento Curricular · DC-GO</span>
+      <h1>Matriz de Habilidades <em>Essenciais</em></h1>
+      <p>Mapeamento normativo e descritores estruturais do Documento Curricular de Goiás (DC-GO) para a 3ª Série do Ensino Médio, organizados por bimestre e por componente de Ciências Humanas e Sociais Aplicadas.</p>
+      <span class="tag">3ª Série · Ensino Médio · Ciências Humanas e Sociais Aplicadas</span>
+    </header>
+
+    <!-- BIMESTRE SELECTOR -->
+    <nav class="bim-nav" role="tablist" aria-label="Selecionar bimestre">
+      <button id="btn-bim1" class="bim-btn active" role="tab" onclick="switchBimestre('bim1')">1º Bimestre</button>
+      <button id="btn-bim2" class="bim-btn" role="tab" onclick="switchBimestre('bim2')">2º Bimestre</button>
+      <button id="btn-bim3" class="bim-btn" role="tab" onclick="switchBimestre('bim3')">3º Bimestre</button>
+      <button id="btn-bim4" class="bim-btn" role="tab" onclick="switchBimestre('bim4')">4º Bimestre</button>
+    </nav>
+
+    <!-- ===================== PANE BIM 1 ===================== -->
+    <section id="pane-bim1" class="bim-pane active">
+      <div class="sec-label"><span>1º Bimestre · Habilidades Essenciais</span></div>
+
+      <article class="disc-card">
+        <header class="disc-head"><h2>História</h2><span class="disc-badge">1º Bimestre</span></header>
+        <div class="disc-body">
+          <div class="grp">
+            <div class="skill"><span class="code">GO-EMCHS603A</span><p>Entender os processos de formação da Primeira Guerra Mundial, utilizando os fatos históricos que remetam às experiências políticas e de exercício da cidadania para sistematizar os conceitos de Estado, poder, sistemas e regimes de governo.</p></div>
+            <div class="skill"><span class="code">GO-EMCHS603C</span><p>Assimilar o processo de formação da Rússia, utilizando dados e fontes históricas vinculadas com a Revolução de 1917 para interpretar os conceitos de Estado, poder, sistemas e regimes de governo nesta conjuntura histórica.</p></div>
+            <p class="habs-label">Habilidades</p>
+            <ul class="habs">
+              <li>Compreender as políticas imperialistas no processo de eclosão da Primeira Guerra Mundial.</li>
+              <li>Identificar as diferentes fases dos conflitos da Primeira Guerra Mundial bem como seu desfecho.</li>
+              <li>Analisar o contexto histórico da Rússia no início do século XX e o processo da Revolução Russa.</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="disc-card">
+        <header class="disc-head"><h2>Geografia</h2><span class="disc-badge">1º Bimestre</span></header>
+        <div class="disc-body">
+          <div class="grp">
+            <div class="skill"><span class="code">GO-EMCHS302B</span><p>Perceber como a tecnologia (meio técnico científico) tem influenciado na evolução dos processos de produção e reprodução do espaço geográfico, por meio de leituras de textos geográficos, mapas e imagens de satélites (sensoriamento remoto) para entender a evolução das transformações do espaço e as formas como as produções espaciais ocorrem.</p></div>
+            <div class="skill"><span class="code">GO-EMCHS302C</span><p>Entender como as tecnologias e seus impactos influenciam no processo de globalização, nos novos arranjos geopolíticos e econômicos atuais e no meio ambiente em diferentes escalas, lendo textos geográficos e filosóficos sobre ética e tecnologia para discutir os aspectos ligados às questões éticas, associadas ao uso das tecnologias emergentes da informação e suas repercussões no mundo dos negócios e na sociedade em geral.</p></div>
+            <div class="skill"><span class="code">GO-EMCHS302D</span><p>Compreender a dinâmica socioambiental e cultural na produção do espaço geográfico global, lendo dados (organismos internacionais), textos geográficos, revistas científicas, dados estatísticos (tabelas e gráficos) para analisar como as decisões governamentais (dos países) acerca do meio ambiente interferem nas questões sociais e políticas no mundo atual.</p></div>
+            <p class="habs-label">Habilidades</p>
+            <ul class="habs">
+              <li>Identificar como as tecnologias influenciam a transformação e a produção do espaço geográfico por meio de mapas, textos e imagens de satélites ao longo do tempo.</li>
+              <li>Analisar os impactos das tecnologias da informação na globalização e nas questões éticas e ambientais.</li>
+              <li>Avaliar como as políticas ambientais e como as decisões governamentais afetam o espaço geográfico mundial.</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="disc-card">
+        <header class="disc-head"><h2>Sociologia</h2><span class="disc-badge">1º Bimestre</span></header>
+        <div class="disc-body">
+          <div class="grp">
+            <div class="skill"><span class="code">GO-EMCHS603D</span><p>Comparar o processo de formação política do Brasil com o dos demais países da América Latina, aplicando os conceitos da Ciência Política como Estado, poder, sistemas, regimes de governo, soberania etc. para analisar os limites da construção da cidadania nestas experiências políticas.</p></div>
+            <p class="habs-label">Habilidades</p>
+            <ul class="habs">
+              <li>Entender as diferenças entre Liberalismo e Socialismo.</li>
+              <li>Compreender os limites para a construção da cidadania no Brasil e na América Latina.</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="disc-card">
+        <header class="disc-head"><h2>Filosofia</h2><span class="disc-badge">1º Bimestre</span></header>
+        <div class="disc-body">
+          <div class="grp">
+            <div class="skill"><span class="code">GO-EMCHS603A</span><p>Entender os processos de formação da Primeira Guerra Mundial, utilizando os fatos históricos que remetam às experiências políticas e de exercício da cidadania para sistematizar os conceitos de Estado, poder, sistemas e regimes de governo.</p></div>
+            <p class="habs-label">Habilidades</p>
+            <ul class="habs">
+              <li>Compreender o pensamento político de Hannah Arendt para pensar criticamente o poder e a soberania no Estado contemporâneo.</li>
+              <li>Analisar as relações de poder nas sociedades contemporâneas a partir do pensamento de Foucault.</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ===================== PANE BIM 2 ===================== -->
+    <section id="pane-bim2" class="bim-pane">
+      <div class="sec-label"><span>2º Bimestre · Habilidades Essenciais</span></div>
+
+      <article class="disc-card">
+        <header class="disc-head"><h2>História</h2><span class="disc-badge">2º Bimestre</span></header>
+        <div class="disc-body">
+          <div class="grp">
+            <div class="skill"><span class="code">GO-EMCHS604A</span><p>Identificar os processos que levaram à Guerra Fria, refletindo sobre a formação da Organização das Nações Unidas (ONU) e a Organização do Tratado do Atlântico Norte (OTAN) para compreender seus limites e suas possibilidades de atuação.</p></div>
+            <p class="habs-label">Habilidades</p>
+            <ul class="habs">
+              <li>Entender as dinâmicas e os eventos cruciais da Segunda Guerra Mundial, analisando suas causas e consequências.</li>
+              <li>Compreender a formação e importância dos organismos internacionais no cenário pós-guerra (ONU e OTAN).</li>
+              <li>Analisar a Guerra Fria e seus desdobramentos em conflitos regionais e globais.</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="disc-card">
+        <header class="disc-head"><h2>Geografia</h2><span class="disc-badge">2º Bimestre</span></header>
+        <div class="disc-body">
+          <div class="grp">
+            <div class="skill"><span class="code">GO-EMCHS304A</span><p>Assimilar a política energética brasileira, estudando textos geográficos, científicos, jornalísticos, mapas, gráficos, dados estatísticos e outros para fazer considerações sobre os impactos ambientais e socioeconômicos nestas políticas.</p></div>
+            <div class="skill"><span class="code">GO-EMCHS304C</span><p>Problematizar as questões ambientais do cerrado e demais biomas brasileiros para percebê-los como parte importante da biodiversidade e da manutenção do equilíbrio ambiental e ecológico local e global.</p></div>
+            <div class="skill"><span class="code">GO-EMCHS304D</span><p>Relacionar os problemas ambientais com os modelos de desenvolvimento econômico e tecnológico, categorizando indicadores socioambientais para debater as questões ambientais.</p></div>
+            <p class="habs-label">Habilidades</p>
+            <ul class="habs">
+              <li>Compreender as principais fontes de energias (renováveis e não renováveis), sua importância econômica e social para o país e suas implicações socioambientais.</li>
+              <li>Caracterizar os diferentes biomas brasileiros e suas relevâncias para o planeta e a sociedade.</li>
+              <li>Avaliar os impactos socioambientais decorrentes das atividades econômicas, em especial no cerrado.</li>
+            </ul>
+          </div>
+          <div class="grp">
+            <div class="skill"><span class="code">GO-EMCHS604C</span><p>Discutir o papel dos organismos internacionais no mundo contemporâneo, analisando textos e dados que tragam os aspectos positivos e negativos dessa atuação para o Brasil para pensar de forma crítica os limites da cidadania nos países de capitalismo dependente.</p></div>
+            <p class="habs-label">Habilidades</p>
+            <ul class="habs">
+              <li>Analisar o papel dos principais organismos internacionais (ONU, OTAN, OMS, OMC, OIT...) no mundo e, especificamente no Brasil.</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="disc-card">
+        <header class="disc-head"><h2>Sociologia</h2><span class="disc-badge">2º Bimestre</span></header>
+        <div class="disc-body">
+          <div class="grp">
+            <div class="skill"><span class="code">GO-EMCHS604C</span><p>Discutir o papel dos organismos internacionais no mundo contemporâneo, analisando textos e dados que tragam os aspectos positivos e negativos dessa atuação para o Brasil para pensar de forma crítica os limites da cidadania nos países de capitalismo dependente.</p></div>
+            <p class="habs-label">Habilidades</p>
+            <ul class="habs">
+              <li>Analisar a definição e histórico da criação de organismos como a ONU, FMI, Banco Mundial, OMC e OMS.</li>
+              <li>Compreender o papel dessas organizações no reordenamento das políticas e infraestruturas no contexto brasileiro.</li>
+              <li>Entender os impactos sociais e econômicos das decisões de agências macroeconômicas globais em países periféricos.</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="disc-card">
+        <header class="disc-head"><h2>Filosofia</h2><span class="disc-badge">2º Bimestre</span></header>
+        <div class="disc-body">
+          <div class="grp">
+            <div class="skill"><span class="code">GO-EMCHS604D</span><p>Analisar a atuação da ONU no Brasil Contemporâneo, pesquisando a influência da Filosofia Humanista como base ética da reflexão e atuação em prol dos direitos fundamentais para construir uma visão crítica sobre o papel dos organismos internacionais no contexto dos Direitos Humanos.</p></div>
+            <p class="habs-label">Habilidades</p>
+            <ul class="habs">
+              <li>Compreender o pensamento político de Tomás de Aquino (o papel do governante no cuidado e bem-comum dos súditos).</li>
+              <li>Analisar, por meio da filosofia de Erasmo de Roterdã, a relação intrínseca entre a tradição humanista e os princípios fundamentais constitutivos dos direitos humanos mundiais.</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ===================== PANE BIM 3 ===================== -->
+    <section id="pane-bim3" class="bim-pane">
+      <div class="sec-label"><span>3º Bimestre · Habilidades Essenciais</span></div>
+      <div class="empty"><b>Conteúdos em preparação</b>As habilidades e os descritores planejados para o 3º Bimestre serão adicionados aqui.</div>
+    </section>
+
+    <!-- ===================== PANE BIM 4 ===================== -->
+    <section id="pane-bim4" class="bim-pane">
+      <div class="sec-label"><span>4º Bimestre · Habilidades Essenciais</span></div>
+      <div class="empty"><b>Conteúdos em preparação</b>As habilidades e os descritores planejados para o 4º Bimestre serão adicionados aqui.</div>
+    </section>
+
+    <div class="footer"><b>3ª Série do Ensino Médio</b> · Ciências Humanas e Sociais Aplicadas — Colégio Estadual Rodolfo de Oliveira · SEDUC-GO</div>
+
+  </div>
+
+<script>
+  function switchBimestre(bimName){
+    document.querySelectorAll('.bim-pane').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.bim-btn').forEach(b=>b.classList.remove('active'));
+    document.getElementById('pane-'+bimName).classList.add('active');
+    document.getElementById('btn-'+bimName).classList.add('active');
+  }
+</script>
+</body>
+</html>

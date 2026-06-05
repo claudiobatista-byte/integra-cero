@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>História — 3ª Série EM</title>
+<style>
+  :root{
+    --navy:#1b5e20;--navy-2:#20642a;--navy-deep:#14532d;
+    --gold:#c8a24a;--gold-soft:#e2c98a;
+    --ink:#1d2533;--muted:#5b6678;
+    --line:rgba(200,162,74,.28);--radius:18px;
+    --shadow:0 24px 60px -30px rgba(20,83,45,.42);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:"Helvetica Neue",Helvetica,"Segoe UI",sans-serif;
+    color:var(--ink);background:#f7f9f7;line-height:1.7;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1120px;margin:0 auto;padding:clamp(22px,4vw,52px)}
+
+  /* HERO */
+  .hero{position:relative;isolation:isolate;
+    background:linear-gradient(150deg,var(--navy) 0%,var(--navy-deep) 100%);
+    color:#fff;border-radius:24px;overflow:hidden;padding:clamp(34px,5vw,64px);box-shadow:var(--shadow);}
+  .hero::before{content:"";position:absolute;inset:0;z-index:-1;
+    background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.03) 0 2px,transparent 2px 22px);}
+  .hero::after{content:"";position:absolute;right:-90px;top:-90px;width:320px;height:320px;border-radius:50%;
+    background:radial-gradient(circle,rgba(200,162,74,.28),transparent 68%);z-index:-1;}
+  .kicker{display:inline-flex;align-items:center;gap:12px;font-size:.72rem;letter-spacing:.26em;
+    text-transform:uppercase;color:var(--gold-soft);font-weight:700;margin-bottom:18px;}
+  .kicker::before{content:"";width:38px;height:2px;background:var(--gold)}
+  .hero h1{font-family:Georgia,"Times New Roman",serif;font-weight:700;
+    font-size:clamp(2.2rem,5.2vw,3.4rem);line-height:1.08;letter-spacing:-.6px;}
+  .hero p{max-width:66ch;margin-top:18px;color:rgba(255,255,255,.84);font-size:clamp(1rem,1.6vw,1.14rem)}
+  .hero .tag{display:inline-block;margin-top:26px;padding:8px 16px;border:1px solid var(--line);
+    border-radius:999px;font-size:.78rem;letter-spacing:.06em;color:var(--gold-soft);}
+
+  /* SECTION LABEL */
+  .sec-label{display:flex;align-items:center;gap:14px;margin:clamp(34px,5vw,52px) 4px 22px}
+  .sec-label span{font-size:.74rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);
+    font-weight:700;white-space:nowrap;}
+  .sec-label::after{content:"";flex:1;height:1px;background:rgba(20,83,45,.14)}
+
+  /* CARDS */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px}
+  .card{position:relative;overflow:hidden;background:#fff;border:1px solid rgba(20,83,45,.10);
+    border-radius:var(--radius);padding:30px 26px 22px;text-align:left;font:inherit;color:inherit;width:100%;
+    cursor:pointer;transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease;}
+  .card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--gold);
+    transform:scaleY(0);transform-origin:top;transition:transform .25s ease;}
+  .card:hover{transform:translateY(-5px);box-shadow:0 26px 54px -32px rgba(20,83,45,.5);border-color:rgba(20,83,45,.18)}
+  .card:hover::before{transform:scaleY(1)}
+  .card:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+  .card.active{transform:translateY(-5px);border-color:var(--gold);box-shadow:0 26px 54px -32px rgba(20,83,45,.5)}
+  .card.active::before{transform:scaleY(1)}
+  .card .row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .card .idx{font-family:Georgia,serif;font-size:1.05rem;font-weight:700;color:var(--gold);letter-spacing:.06em}
+  .card .pill{font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:var(--muted);
+    background:rgba(20,83,45,.05);border:1px solid rgba(20,83,45,.12);padding:4px 9px;border-radius:999px;white-space:nowrap;}
+  .card.has-links .pill{color:var(--navy-deep);background:rgba(200,162,74,.16);border-color:var(--line)}
+  .card h3{font-family:Georgia,serif;color:var(--navy);font-size:1.26rem;margin:16px 0 8px;letter-spacing:-.2px}
+  .card p{color:var(--muted);font-size:.94rem;line-height:1.6;margin-bottom:14px}
+  .card .cta{display:inline-flex;align-items:center;gap:7px;font-size:.74rem;letter-spacing:.08em;
+    text-transform:uppercase;font-weight:700;color:var(--navy-deep)}
+  .card .cta i{font-style:normal;font-size:1rem;transition:transform .25s ease;color:var(--gold)}
+  .card.active .cta i{transform:rotate(90deg)}
+
+  /* DETAIL PANEL */
+  .detail{max-height:0;overflow:hidden;opacity:0;background:#fff;border:1px solid rgba(20,83,45,.12);
+    border-top:3px solid var(--gold);border-radius:var(--radius);
+    transition:max-height .42s ease,opacity .35s ease,margin .3s ease;margin-top:0;}
+  .detail.open{opacity:1;margin-top:18px}
+  .detail-inner{padding:26px 28px}
+  .detail-inner h3{font-family:Georgia,serif;color:var(--navy-deep);font-size:1.3rem;letter-spacing:-.2px}
+  .detail-inner .d-sub{color:var(--muted);font-size:.9rem;margin:4px 0 16px}
+
+  /* in-panel bimester selector (matriz style) */
+  .bim-nav-d{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}
+  .bim-d{font:inherit;cursor:pointer;border:1px solid rgba(20,83,45,.16);background:#fff;color:var(--muted);
+    padding:9px 16px;border-radius:999px;font-weight:700;font-size:.8rem;letter-spacing:.02em;
+    transition:transform .2s ease,box-shadow .2s ease,background .2s ease,color .2s ease,border-color .2s ease;}
+  .bim-d:hover{color:var(--navy);border-color:rgba(20,83,45,.32)}
+  .bim-d.active{background:linear-gradient(135deg,var(--navy),var(--navy-deep));color:#fff;
+    border-color:var(--navy-deep);box-shadow:0 10px 22px -14px rgba(20,83,45,.6)}
+
+  .link-list{display:grid;gap:10px}
+  .link-item{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 18px;
+    border:1px solid rgba(20,83,45,.12);border-radius:12px;text-decoration:none;color:var(--navy-deep);
+    background:#fbfdfb;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease,background .2s ease;}
+  .link-item:hover{border-color:var(--gold);background:#fff;transform:translateX(3px);box-shadow:0 12px 30px -22px rgba(20,83,45,.5)}
+  .link-item .li-label{font-weight:600;font-size:.96rem}
+  .link-item .li-go{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);font-weight:700;white-space:nowrap}
+  .empty-msg{color:var(--muted);font-size:.96rem;text-align:center;padding:20px;border:1px dashed var(--line);border-radius:12px}
+
+  /* NOTE / FOOTER */
+  .note{margin-top:30px;background:#fff;border:1px dashed var(--line);border-radius:var(--radius);
+    padding:24px;color:var(--muted);text-align:center;font-size:.98rem}
+  .note b{color:var(--navy)}
+  .footer{text-align:center;margin-top:44px;padding-top:26px;border-top:1px solid rgba(20,83,45,.12);
+    color:var(--muted);font-size:.85rem}
+  .footer b{color:var(--navy)}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <span class="kicker">Ciências Humanas · CHSA</span>
+      <h1>História</h1>
+      <p>Página da disciplina de História — espaço para aulas, fontes históricas, atividades e avaliações da 3ª Série, articuladas à BNCC, ao DC-GO e às avaliações SAEGO e Novo ENEM.</p>
+      <span class="tag">3ª Série · Ensino Médio · História</span>
+    </header>
+
+    <div class="sec-label"><span>Estrutura da página</span></div>
+    <div class="grid" id="grid"><button class="card" type="button" aria-expanded="false"><div class="row"><span class="idx">01</span><span class="pill">Em breve</span></div><h3>Aulas</h3><p>Materiais de apoio e conteúdos da disciplina.</p><span class="cta">Ver conteúdo <i>&rsaquo;</i></span></button><button class="card has-links" type="button" aria-expanded="false"><div class="row"><span class="idx">02</span><span class="pill">8 itens</span></div><h3>Atividades</h3><p>Atividades interativas e exercícios.</p><span class="cta">Ver conteúdo <i>&rsaquo;</i></span></button><button class="card has-links" type="button" aria-expanded="false"><div class="row"><span class="idx">03</span><span class="pill">1 item</span></div><h3>Avaliações</h3><p>Quizzes e simulados alinhados ao SAEGO e ao Novo ENEM.</p><span class="cta">Ver conteúdo <i>&rsaquo;</i></span></button><button class="card has-links" type="button" aria-expanded="false"><div class="row"><span class="idx">04</span><span class="pill">1 item</span></div><h3>Revisa Goiás</h3><p>Material de revisão do Revisa Goiás, organizado por bimestre.</p><span class="cta">Ver conteúdo <i>&rsaquo;</i></span></button></div>
+    <div class="detail" id="detail"><div class="detail-inner" id="detailInner"></div></div>
+
+    <div class="note">Clique em uma seção acima e escolha o bimestre para ver os conteúdos de <b>História</b> — 3ª Série do Ensino Médio.</div>
+    <div class="footer"><b>3ª Série do Ensino Médio</b> · Ciências Humanas e Sociais Aplicadas — Colégio Estadual Rodolfo de Oliveira · SEDUC-GO</div>
+  </div>
+
+<script>
+  const CARD_DATA = [{"title": "Aulas", "sub": "Materiais de apoio e conteúdos da disciplina.", "bims": {"1": [], "2": [], "3": [], "4": []}}, {"title": "Atividades", "sub": "Atividades interativas e exercícios.", "bims": {"1": [], "2": [{"label": "ATV2 SAEGO", "url": "https://bespoke-frangollo-e9109a.netlify.app/"}, {"label": "ATV3 SAEGO", "url": "https://lively-sable-ea0211.netlify.app/"}, {"label": "ATV4 SAEGO", "url": "https://storied-scone-3f42d1.netlify.app/"}, {"label": "ATV5 SAEGO", "url": "https://lively-sable-ea0211.netlify.app/"}, {"label": "ATV6 SAEGO", "url": "https://warm-raindrop-f06ad4.netlify.app/"}, {"label": "ATV7 SAEGO", "url": "https://claudiobatista-byte.github.io/3-S-RIE-EM-2026/atvsaego2bim/atvsaego7.html"}, {"label": "ATV8 SAEGO", "url": "https://claudiobatista-byte.github.io/3-S-RIE-EM-2026/atvsaego2bim/atvsaego8.html"}, {"label": "ATV9 SAEGO", "url": "https://claudiobatista-byte.github.io/3-S-RIE-EM-2026/atvsaego2bim/atvsaego9.html"}], "3": [], "4": []}}, {"title": "Avaliações", "sub": "Quizzes e simulados alinhados ao SAEGO e ao Novo ENEM.", "bims": {"1": [], "2": [{"label": "Testlet CH — 2º Bimestre", "url": "https://merry-biscotti-27899d.netlify.app/"}], "3": [], "4": []}}, {"title": "Revisa Goiás", "sub": "Material de revisão do Revisa Goiás, organizado por bimestre.", "bims": {"1": [], "2": [{"label": "Revisa Goiás — 2º Bimestre", "url": "https://rad-semolina-951acb.netlify.app/"}], "3": [], "4": []}}];
+  const BIMS = ["1","2","3","4"];
+  const cards = document.querySelectorAll('.card');
+  const detail = document.getElementById('detail');
+  const detailInner = document.getElementById('detailInner');
+  let activeIdx = -1, activeBim = "1";
+
+  function firstBimWith(d){
+    for(const b of BIMS){ if(d.bims[b] && d.bims[b].length) return b; }
+    return "1";
+  }
+  function linksHtml(arr){
+    if(!arr || !arr.length) return '<p class="empty-msg">Nenhum conteúdo para este bimestre ainda.</p>';
+    return '<div class="link-list">' + arr.map(function(l){
+      return '<a class="link-item" href="'+l.url+'" target="_blank" rel="noopener">'
+           + '<span class="li-label">'+l.label+'</span><span class="li-go">Abrir &rarr;</span></a>';
+    }).join('') + '</div>';
+  }
+  function fit(){ detail.style.maxHeight = detail.scrollHeight + 'px'; }
+
+  function renderDetail(){
+    const d = CARD_DATA[activeIdx];
+    var html = '<h3>'+d.title+'</h3><p class="d-sub">'+d.sub+'</p>';
+    html += '<div class="bim-nav-d">' + BIMS.map(function(b){
+      return '<button type="button" class="bim-d'+(b===activeBim?' active':'')+'" data-b="'+b+'">'+b+'º Bimestre</button>';
+    }).join('') + '</div>';
+    html += linksHtml(d.bims[activeBim]);
+    detailInner.innerHTML = html;
+    detailInner.querySelectorAll('.bim-d').forEach(function(btn){
+      btn.addEventListener('click', function(){ activeBim = btn.dataset.b; renderDetail(); fit(); });
+    });
+  }
+
+  function openCard(i){
+    if(i===activeIdx){ closeDetail(); return; }
+    activeIdx = i;
+    cards.forEach(function(c,idx){ c.classList.toggle('active', idx===i); c.setAttribute('aria-expanded', idx===i?'true':'false'); });
+    activeBim = firstBimWith(CARD_DATA[i]);
+    renderDetail();
+    detail.classList.add('open');
+    fit();
+  }
+  function closeDetail(){
+    activeIdx = -1;
+    cards.forEach(function(c){ c.classList.remove('active'); c.setAttribute('aria-expanded','false'); });
+    detail.style.maxHeight = null;
+    detail.classList.remove('open');
+  }
+  cards.forEach(function(c,idx){ c.addEventListener('click', function(){ openCard(idx); }); });
+  window.addEventListener('resize', function(){ if(activeIdx>-1) fit(); });
+</script>
+</body>
+</html>

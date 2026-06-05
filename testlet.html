@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Testlet — Desvendando o SAEGO / Novo ENEM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14532d;
+    --ink-soft:#1b5e20;
+    --paper:#f7f9f7;
+    --paper-2:#e4efe5;
+    --cream-card:#f8fcf8;
+    --gold:#c8a24a;
+    --gold-deep:#a07c25;
+    --teal:#20642a;
+    --coral:#2d7a3a;
+    --line:#b8d4bc;
+    --shadow:18px 18px 0 rgba(20,83,45,.12);
+    --display:"Fraunces", Georgia, "Times New Roman", serif;
+    --body:"Newsreader", Georgia, serif;
+    --mono:"JetBrains Mono", "Courier New", monospace;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--body);
+    background:var(--paper);
+    color:var(--ink);
+    line-height:1.7;
+    font-size:18px;
+    overflow-x:hidden;
+  }
+
+  /* ---------- progress bar ---------- */
+  .progress{
+    position:fixed;top:0;left:0;height:5px;width:0%;
+    background:linear-gradient(90deg,var(--gold),#4caf50);
+    z-index:999;transition:width .1s linear;
+  }
+
+  /* ---------- shared layout ---------- */
+  .wrap{max-width:980px;margin:0 auto;padding:0 26px}
+  section{position:relative}
+
+  .tag{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:var(--mono);font-size:12px;font-weight:700;
+    letter-spacing:2px;text-transform:uppercase;
+    color:var(--gold-deep);
+  }
+  .tag::before{content:"";width:26px;height:2px;background:var(--gold)}
+
+  h1,h2,h3{font-family:var(--display);line-height:1.05;letter-spacing:-.5px}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;isolation:isolate;
+    background:linear-gradient(150deg,#1b5e20 0%,#14532d 100%);
+    color:var(--paper);
+    padding:96px 0 120px;
+    overflow:hidden;
+  }
+  .hero::before{content:"";position:absolute;inset:0;z-index:0;
+    background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.03) 0 2px,transparent 2px 22px);}
+  .hero::after{content:"";position:absolute;right:-60px;top:-90px;width:340px;height:340px;border-radius:50%;
+    background:radial-gradient(circle,rgba(200,162,74,.28),transparent 68%);z-index:0;}
+  .hero .wrap{position:relative;z-index:2}
+  .hero .tag{color:var(--gold)}
+  .hero .tag::before{background:var(--gold)}
+  .hero h1{
+    font-size:clamp(42px,8vw,86px);
+    font-weight:900;margin:22px 0 8px;
+  }
+  .hero h1 .glow{
+    color:var(--gold);font-style:italic;font-weight:500;
+    position:relative;display:inline-block;
+  }
+  .hero p.sub{
+    font-size:clamp(18px,2.4vw,23px);max-width:620px;
+    color:#c8e6c9;margin-top:14px;
+  }
+  .hero p.sub b{color:var(--gold)}
+
+  /* floating cards in hero */
+  .float-cards{
+    position:absolute;right:-30px;top:50%;transform:translateY(-50%);
+    width:300px;height:340px;z-index:1;opacity:.9;
+  }
+  .fc{
+    position:absolute;width:150px;height:96px;border-radius:12px;
+    background:#0a3d1a;border:1px solid rgba(200,162,74,.35);
+    box-shadow:0 14px 30px rgba(0,0,0,.35);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--mono);font-size:13px;color:var(--gold);
+  }
+  .fc1{top:20px;right:90px;transform:rotate(-8deg);animation:bob 6s ease-in-out infinite}
+  .fc2{top:120px;right:10px;transform:rotate(6deg);animation:bob 6s ease-in-out infinite .8s}
+  .fc3{top:215px;right:110px;transform:rotate(-4deg);animation:bob 6s ease-in-out infinite 1.6s}
+  .fc.base{background:var(--gold);color:var(--ink);width:170px;height:120px;
+    top:70px;right:55px;transform:rotate(2deg);box-shadow:0 18px 40px rgba(196,146,43,.4);
+    font-weight:700;animation:bob 7s ease-in-out infinite .4s}
+  @keyframes bob{0%,100%{transform:translateY(0) rotate(var(--r,0))}50%{transform:translateY(-14px) rotate(var(--r,0))}}
+  .fc1{--r:-8deg}.fc2{--r:6deg}.fc3{--r:-4deg}.fc.base{--r:2deg}
+
+  .scroll-hint{
+    margin-top:54px;font-family:var(--mono);font-size:12px;
+    letter-spacing:2px;color:#a5d6a7;display:flex;align-items:center;gap:10px;
+  }
+  .scroll-hint .arrow{display:inline-block;animation:down 1.6s ease-in-out infinite}
+  @keyframes down{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+
+  /* ---------- generic block ---------- */
+  .block{padding:80px 0}
+  .lead{font-size:clamp(26px,4vw,40px);font-weight:600;margin:18px 0 26px;max-width:760px}
+  .lead em{font-style:italic;color:var(--gold-deep)}
+  p.txt{max-width:680px;margin-bottom:20px;color:var(--ink-soft);font-size:19px}
+  p.txt b{color:var(--ink)}
+
+  .pull{
+    border-left:5px solid var(--gold);
+    background:var(--paper-2);
+    padding:22px 26px;margin:30px 0;border-radius:0 14px 14px 0;
+    font-family:var(--display);font-style:italic;font-size:21px;
+    color:var(--ink);max-width:720px;
+  }
+  .pull b{font-style:normal;color:var(--gold-deep)}
+
+  /* ---------- diagram: one text -> many questions ---------- */
+  .diagram{
+    display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+    justify-content:center;margin:36px 0 10px;
+  }
+  .d-base{
+    background:#0a3d1a;color:var(--paper);border-radius:16px;
+    padding:24px 22px;width:210px;flex-shrink:0;text-align:center;
+    box-shadow:var(--shadow);
+  }
+  .d-base .ico{font-size:30px}
+  .d-base .ttl{font-family:var(--display);font-weight:700;font-size:21px;margin:6px 0 2px}
+  .d-base .lbl{font-family:var(--mono);font-size:11px;letter-spacing:1px;color:var(--gold)}
+  .d-arrows{display:flex;flex-direction:column;gap:14px}
+  .d-arrows .ln{display:flex;align-items:center;font-family:var(--mono);color:var(--gold);font-size:22px}
+  .d-q{
+    display:flex;flex-direction:column;gap:14px;flex:1;min-width:240px;
+  }
+  .d-q .q{
+    background:var(--cream-card);border:1.5px solid var(--line);
+    border-radius:12px;padding:14px 18px;display:flex;gap:12px;align-items:center;
+    box-shadow:6px 6px 0 rgba(20,33,61,.06);
+  }
+  .d-q .q .num{
+    width:34px;height:34px;border-radius:50%;flex-shrink:0;
+    background:var(--gold);color:var(--ink);display:flex;align-items:center;
+    justify-content:center;font-family:var(--mono);font-weight:700;
+  }
+  .d-q .q span{font-size:16px;color:var(--ink-soft)}
+
+  /* ---------- INTERACTIVE DEMO ---------- */
+  .demo{position:relative;isolation:isolate;overflow:hidden;
+    background:linear-gradient(150deg,#1b5e20 0%,#14532d 100%);color:var(--paper);padding:84px 0}
+  .demo::before{content:"";position:absolute;inset:0;z-index:0;
+    background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.03) 0 2px,transparent 2px 22px)}
+  .demo .wrap{position:relative;z-index:1}
+  .demo .tag{color:var(--gold)}.demo .tag::before{background:var(--gold)}
+  .demo h2{color:var(--paper);font-size:clamp(30px,5vw,46px);font-weight:900;margin:16px 0 8px}
+  .demo .sub2{color:#c8e6c9;max-width:620px;margin-bottom:34px;font-size:19px}
+
+  .demo-grid{display:grid;grid-template-columns:1.15fr 1fr;gap:26px}
+  @media(max-width:780px){.demo-grid{grid-template-columns:1fr}}
+
+  .text-card{
+    background:var(--cream-card);color:var(--ink);border-radius:18px;
+    padding:30px 30px 26px;box-shadow:0 20px 50px rgba(0,0,0,.35);
+    position:relative;
+  }
+  .text-card .doc-tab{
+    position:absolute;top:-15px;left:26px;background:var(--gold);
+    color:var(--ink);font-family:var(--mono);font-size:11px;font-weight:700;
+    letter-spacing:1px;padding:5px 14px;border-radius:8px;
+  }
+  .text-card h3{font-size:24px;margin:10px 0 14px}
+  .text-card .ex-text{font-size:18.5px;line-height:1.85;color:#3a4356}
+  .text-card .ex-text .s{
+    transition:background .4s, color .3s, box-shadow .3s;
+    border-radius:4px;padding:1px 2px;
+  }
+  .text-card .ex-text .s.lit{
+    background:linear-gradient(180deg,transparent 55%, #ffe39a 55%);
+    color:var(--ink);font-weight:500;
+    box-shadow:0 0 0 1px rgba(196,146,43,.0);
+  }
+  .text-card .note{
+    margin-top:14px;font-size:13px;font-family:var(--mono);
+    color:#8b8470;border-top:1px dashed var(--line);padding-top:12px;
+  }
+
+  .q-panel{display:flex;flex-direction:column;gap:14px}
+  .q-tabs{display:flex;gap:10px;flex-wrap:wrap}
+  .q-tab{
+    flex:1;min-width:96px;cursor:pointer;border:1.5px solid rgba(200,162,74,.4);
+    background:transparent;color:var(--gold);font-family:var(--mono);
+    font-size:13px;font-weight:700;padding:12px 8px;border-radius:10px;
+    transition:all .25s;text-align:center;
+  }
+  .q-tab:hover{background:rgba(200,162,74,.12)}
+  .q-tab.active{background:var(--gold);color:var(--ink);border-color:var(--gold);
+    box-shadow:0 8px 20px rgba(200,162,74,.35)}
+
+  .q-display{
+    background:#0a3d1a;border:1px solid rgba(255,255,255,.08);
+    border-radius:16px;padding:24px;min-height:230px;
+  }
+  .q-display .focus{
+    display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:1px;
+    background:rgba(200,162,74,.18);color:var(--gold);padding:5px 12px;
+    border-radius:20px;margin-bottom:14px;
+  }
+  .q-display .q-head{font-family:var(--display);font-size:21px;font-weight:600;color:var(--paper);margin-bottom:14px}
+  .q-display .q-stem{font-size:16.5px;color:#a5d6a7;line-height:1.6;margin-bottom:16px}
+  .q-display .hint{font-size:14px;color:#81c784;font-style:italic;border-left:3px solid var(--gold);padding-left:12px}
+  .q-fade{animation:fadein .45s ease}
+  @keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  /* ---------- WHY (benefit cards) ---------- */
+  .why-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:34px}
+  @media(max-width:720px){.why-grid{grid-template-columns:1fr}}
+  .bcard{
+    background:var(--cream-card);border-radius:18px;padding:30px;
+    border:1.5px solid var(--line);box-shadow:var(--shadow);position:relative;overflow:hidden;
+    transition:transform .3s;
+  }
+  .bcard:hover{transform:translateY(-6px)}
+  .bcard .big-ico{font-size:40px;margin-bottom:10px;display:block}
+  .bcard.gold{border-top:6px solid var(--gold)}
+  .bcard.teal{border-top:6px solid var(--teal)}
+  .bcard h3{font-size:25px;margin-bottom:8px}
+  .bcard p{color:var(--ink-soft);font-size:17px}
+  .bcard .corner{
+    position:absolute;right:-20px;bottom:-30px;font-size:130px;opacity:.06;
+    font-family:var(--display);font-weight:900;
+  }
+
+  /* ---------- SUPERDICAS (expandable) ---------- */
+  .tips{counter-reset:tip}
+  .tip{
+    background:var(--cream-card);border:1.5px solid var(--line);border-radius:16px;
+    margin-bottom:16px;overflow:hidden;transition:box-shadow .3s;
+  }
+  .tip.open{box-shadow:var(--shadow)}
+  .tip-head{
+    display:flex;align-items:center;gap:18px;padding:22px 24px;cursor:pointer;user-select:none;
+  }
+  .tip-head .n{
+    counter-increment:tip;width:46px;height:46px;flex-shrink:0;border-radius:12px;
+    background:var(--ink);color:var(--gold);font-family:var(--mono);font-weight:700;
+    font-size:20px;display:flex;align-items:center;justify-content:center;
+    border:2px solid rgba(200,162,74,.3);
+  }
+  .tip-head .n::before{content:counter(tip,decimal-leading-zero)}
+  .tip-head h3{font-size:21px;flex:1}
+  .tip-head .chev{font-family:var(--mono);color:var(--gold-deep);transition:transform .3s;font-size:18px}
+  .tip.open .chev{transform:rotate(90deg)}
+  .tip-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
+  .tip-body .inner{padding:0 24px 24px 88px;color:var(--ink-soft);font-size:17.5px}
+  .tip-body .inner b{color:var(--ink)}
+
+  /* ---------- CLOSING ---------- */
+  .closing{background:linear-gradient(135deg,var(--ink) 0%,#20642a 100%);color:#e8f5e9;padding:80px 0;text-align:center}
+  .closing .wrap{max-width:760px}
+  .closing .qmark{font-family:var(--display);font-size:90px;line-height:.4;opacity:.3;color:var(--gold)}
+  .closing h2{font-size:clamp(30px,5vw,46px);font-weight:900;margin:6px 0 18px;color:#fff}
+  .closing p{font-size:21px;color:#c8e6c9;max-width:600px;margin:0 auto}
+  .closing p b{color:var(--gold)}
+  .closing .signoff{margin-top:30px;font-family:var(--mono);font-size:13px;letter-spacing:2px;font-weight:700;color:var(--gold)}
+
+  /* reveal on scroll */
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease, transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+
+  footer{background:#0a3d1a;color:#81c784;text-align:center;padding:26px;font-family:var(--mono);font-size:12px;letter-spacing:1px}
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="float-cards" aria-hidden="true">
+    <div class="fc fc1">questão 16</div>
+    <div class="fc base">TEXTO-BASE</div>
+    <div class="fc fc2">questão 17</div>
+    <div class="fc fc3">questão 18</div>
+  </div>
+  <div class="wrap">
+    <span class="tag">Desvendando o SAEGO / Novo ENEM</span>
+    <h1>Você sabe o que é<br>um <span class="glow">Testlet</span>?</h1>
+    <p class="sub">Aquele bloco de <b>duas, três ou mais questões</b> que vêm logo depois de um mesmo texto ou tirinha tem um nome técnico. Vamos descobrir como usá-lo a seu favor.</p>
+    <div class="scroll-hint"><span class="arrow">↓</span> ROLE PARA COMEÇAR</div>
+  </div>
+</header>
+
+<!-- O QUE É -->
+<section class="block">
+  <div class="wrap reveal">
+    <span class="tag">O conceito</span>
+    <p class="lead">Afinal, o que é um <em>Testlet</em>?</p>
+    <p class="txt">A palavra parece complicada, mas a ideia é bem simples. Um <b>Testlet</b> (ou "bloco de superquestões") é um conjunto de questões que compartilham o <b>mesmo texto-base</b>.</p>
+    <p class="txt">Em vez de ler um texto enorme para responder a apenas uma pergunta — e depois ler outro texto completamente diferente para a próxima — a prova te dá um descanso. Você faz um <b>esforço de leitura concentrado</b> em um único texto e usa essa mesma base para resolver várias questões em sequência.</p>
+
+    <div class="diagram">
+      <div class="d-base">
+        <div class="ttl">O Álbum de Figurinhas</div>
+        <div class="lbl">UM ÚNICO TEXTO</div>
+      </div>
+      <div class="d-arrows">
+        <div class="ln">→</div>
+        <div class="ln">→</div>
+        <div class="ln">→</div>
+      </div>
+      <div class="d-q">
+        <div class="q"><div class="num">16</div><span>O que o texto quer dizer no geral?</span></div>
+        <div class="q"><div class="num">17</div><span>Qual o sentido daquela palavra?</span></div>
+        <div class="q"><div class="num">18</div><span>Qual é a opinião do autor?</span></div>
+      </div>
+    </div>
+
+    <div class="pull"><b>Na Avaliação Diagnóstica SAEGO,</b> o texto "O Álbum de Figurinhas" é o coração de um testlet que alimenta as questões <b>16, 17 e 18</b>.</div>
+  </div>
+</section>
+
+<!-- DEMO INTERATIVO -->
+<section class="demo">
+  <div class="wrap reveal">
+    <span class="tag">Veja na prática</span>
+    <h2>Um texto, vários olhares</h2>
+    <p class="sub2">Clique em cada questão abaixo e observe como elas mergulham em <b>partes diferentes</b> do mesmo texto. Esse é o segredo do testlet. <em>(Exemplo ilustrativo.)</em></p>
+
+    <div class="demo-grid">
+      <div class="text-card">
+        <span class="doc-tab">TEXTO-BASE</span>
+        <h3>O Canteiro de Dona Lúcia</h3>
+        <p class="ex-text">
+          <span class="s" data-s="1">Toda tarde, Dona Lúcia regava o pequeno canteiro que cultivava nos fundos de casa.</span>
+          <span class="s" data-s="2">Para ela, cada muda era um pacto silencioso com o futuro: plantava hoje aquilo que só daria sombra daqui a muitos anos.</span>
+          <span class="s" data-s="3">Os vizinhos achavam aquilo um tanto quixotesco — afinal, para que tanto esforço por uma árvore que ela talvez nunca visse crescer?</span>
+          <span class="s" data-s="4">Mas é justamente aí que mora a beleza de quem planta: cuidar do que vem depois de nós talvez seja o gesto mais generoso que existe.</span>
+        </p>
+        <div class="note">↑ O destaque amarelo mostra o trecho que cada questão exige que você releia.</div>
+      </div>
+
+      <div class="q-panel">
+        <div class="q-tabs">
+          <button class="q-tab active" data-q="0">Questão 1</button>
+          <button class="q-tab" data-q="1">Questão 2</button>
+          <button class="q-tab" data-q="2">Questão 3</button>
+        </div>
+        <div class="q-display" id="qDisplay"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- POR QUE USAR -->
+<section class="block">
+  <div class="wrap reveal">
+    <span class="tag">A lógica por trás</span>
+    <p class="lead">Por que as provas usam esse modelo?</p>
+    <div class="why-grid">
+      <div class="bcard gold">
+        <h3>Cansaço nota zero</h3>
+        <p>Ler muitos textos longos cansa a mente. O testlet economiza a sua energia para que você consiga focar no que realmente importa: <b>raciocinar sobre as perguntas</b>.</p>
+        <span class="corner">+</span>
+      </div>
+      <div class="bcard teal">
+        <h3>Múltiplos olhares</h3>
+        <p>Um bom texto tem várias camadas. A prova avalia se você entendeu o <b>tema geral</b>, se decifra uma <b>palavra difícil</b> e se nota a <b>opinião do autor</b> — tudo a partir do mesmo trecho.</p>
+        <span class="corner">×</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SUPERDICAS -->
+<section class="block" style="padding-top:30px">
+  <div class="wrap reveal">
+    <span class="tag">Estratégia de mestre</span>
+    <p class="lead">Superdicas para <em>detonar</em> nos Testlets</p>
+    <div class="tips" id="tips">
+      <div class="tip open">
+        <div class="tip-head"><div class="n"></div><h3>Dê uma espiada nas perguntas antes</h3><span class="chev">▶</span></div>
+        <div class="tip-body"><div class="inner">Antes de ler o texto principal, leia rapidamente o <b>comando das questões</b> que vêm logo em seguida. Isso ajuda sua mente a fazer uma leitura direcionada — você já lê o texto sabendo exatamente o que precisa procurar!</div></div>
+      </div>
+      <div class="tip">
+        <div class="tip-head"><div class="n"></div><h3>Não tenha preguiça de voltar ao texto</h3><span class="chev">▶</span></div>
+        <div class="tip-body"><div class="inner">Como o mesmo texto responde a várias perguntas, a resposta da questão 18 pode estar no <b>primeiro parágrafo</b>, e a da 19 pode exigir uma análise do <b>desfecho</b>. Terminou uma questão? Volte e releia o trecho necessário para a próxima.</div></div>
+      </div>
+      <div class="tip">
+        <div class="tip-head"><div class="n"></div><h3>Cuidado com as pegadinhas</h3><span class="chev">▶</span></div>
+        <div class="tip-body"><div class="inner">Às vezes a questão 1 pede uma informação <b>explícita</b> (fácil de achar), mas a questão 2 exige que você leia "<b>nas entrelinhas</b>" (uma informação implícita). Fique atento ao que cada enunciado pede para não misturar os comandos!</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING -->
+<section class="closing">
+  <div class="wrap reveal">
+    <div class="qmark">”</div>
+    <h2>O texto é o seu maior aliado</h2>
+    <p>No modelo de testlet, dominar a leitura do texto significa garantir <b>vários pontos de uma vez só</b>. Boa revisão e bons estudos!</p>
+    <div class="signoff">PROF. CLAUDIO · REVISA GOIÁS · CIÊNCIAS HUMANAS</div>
+  </div>
+</section>
+
+<footer>SAEGO · SAEB · NOVO ENEM — Material de revisão interativo</footer>
+
+<script>
+  /* ---------- questions data for the demo ---------- */
+  const QUESTIONS = [
+    {
+      focus:"TEMA GERAL",
+      head:"Qual é a ideia central do texto?",
+      stem:"O texto, em sua totalidade, defende principalmente a ideia de que...",
+      sentences:[2,4],
+      hint:"Aqui você precisa enxergar o sentido do texto como um todo — junte o início e o desfecho."
+    },
+    {
+      focus:"SENTIDO DE PALAVRA",
+      head:'O que significa "quixotesco"?',
+      stem:'No trecho "achavam aquilo um tanto quixotesco", a palavra em destaque tem o sentido de algo...',
+      sentences:[3],
+      hint:"Não precisa decorar o dicionário: o próprio contexto da frase entrega o sentido."
+    },
+    {
+      focus:"OPINIÃO DO AUTOR",
+      head:"Qual é o posicionamento do autor?",
+      stem:'A expressão "é justamente aí que mora a beleza" revela que o autor...',
+      sentences:[4],
+      hint:"Procure as marcas de opinião — palavras de valor como 'beleza' e 'mais generoso'."
+    }
+  ];
+
+  const qDisplay = document.getElementById('qDisplay');
+  const tabs = document.querySelectorAll('.q-tab');
+  const sentenceEls = document.querySelectorAll('.ex-text .s');
+
+  function renderQ(i){
+    const q = QUESTIONS[i];
+    qDisplay.innerHTML = `
+      <div class="q-fade">
+        <span class="focus">${q.focus}</span>
+        <div class="q-head">${q.head}</div>
+        <div class="q-stem">${q.stem}</div>
+        <div class="hint">${q.hint}</div>
+      </div>`;
+    sentenceEls.forEach(el=>{
+      el.classList.toggle('lit', q.sentences.includes(+el.dataset.s));
+    });
+    tabs.forEach((t,idx)=>t.classList.toggle('active', idx===i));
+  }
+  tabs.forEach((t,idx)=>t.addEventListener('click',()=>renderQ(idx)));
+  renderQ(0);
+
+  /* ---------- tips accordion ---------- */
+  document.querySelectorAll('.tip').forEach(tip=>{
+    const body = tip.querySelector('.tip-body');
+    if(tip.classList.contains('open')) body.style.maxHeight = body.scrollHeight+'px';
+    tip.querySelector('.tip-head').addEventListener('click',()=>{
+      const isOpen = tip.classList.contains('open');
+      document.querySelectorAll('.tip').forEach(t=>{
+        t.classList.remove('open');
+        t.querySelector('.tip-body').style.maxHeight = null;
+      });
+      if(!isOpen){
+        tip.classList.add('open');
+        body.style.maxHeight = body.scrollHeight+'px';
+      }
+    });
+  });
+
+  /* ---------- progress bar ---------- */
+  const prog = document.getElementById('progress');
+  window.addEventListener('scroll',()=>{
+    const h = document.documentElement.scrollHeight - window.innerHeight;
+    prog.style.width = (window.scrollY/h*100)+'%';
+  });
+
+  /* ---------- reveal on scroll ---------- */
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+  },{threshold:.15});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

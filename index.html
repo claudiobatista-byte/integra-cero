@@ -104,6 +104,19 @@
   .tab .lbl b{font-size:.98rem;font-weight:700;line-height:1.25}
   .tab .lbl span{font-size:.74rem;letter-spacing:.04em;color:rgba(255,255,255,.5)}
 
+  /* eixos selector toggle (mobile only) */
+  .tabs-toggle{
+    display:none;width:100%;align-items:center;justify-content:space-between;gap:12px;
+    cursor:pointer;font:inherit;font-weight:700;color:#fff;
+    background:rgba(255,255,255,.08);border:1px solid var(--line);border-radius:12px;padding:14px 16px;
+  }
+  .tabs-toggle .tt-current{display:flex;align-items:center;gap:11px;min-width:0}
+  .tabs-toggle .tt-num{flex:none;width:30px;height:30px;border-radius:8px;display:grid;place-items:center;
+    background:var(--gold);color:var(--navy-deep);font-family:Georgia,serif;font-size:.85rem}
+  .tabs-toggle .tt-label{font-size:.98rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tabs-toggle .tt-caret{flex:none;color:var(--gold-soft);font-size:1.3rem;line-height:1;transition:transform .25s ease}
+  .tabs-toggle.open .tt-caret{transform:rotate(90deg)}
+
   .content{padding:clamp(26px,3.5vw,44px);position:relative;min-height:380px}
   .article{display:none;animation:fade .45s ease both}
   .article.active{display:block}
@@ -242,12 +255,13 @@
   }
   @media (max-width:820px){
     .panel{grid-template-columns:1fr}
-    .tabs{display:flex;gap:8px;overflow-x:auto;padding:12px;scrollbar-width:none}
-    .tabs::-webkit-scrollbar{display:none}
-    .tab{flex:0 0 auto;width:auto;padding:12px 14px;border-radius:10px}
+    .tabs{padding:12px}
+    .tabs-toggle{display:flex}
+    .tabs .tab{display:none;width:100%;margin-top:8px}
+    .tabs.open .tab{display:flex}
     .tab.active::before{display:none}
-    .tab .lbl span{display:none}
-    .tab .lbl b{font-size:.85rem;white-space:nowrap}
+    .tab .lbl span{display:block}
+    .tab .lbl b{font-size:.92rem}
   }
 </style>
 </head>
@@ -256,7 +270,7 @@
 <nav class="navbar">
   <div class="navbar-inner">
     <a class="navbar-brand" href="#" data-view="home">
-      <img class="navbar-logo" img src="p1/logotr.png" alt="Logo 3ª Série EM – Colégio Estadual Rodolfo de Oliveira">
+      <img class="navbar-logo" src="p1/logotr.png" alt="Logo 3ª Série EM – Colégio Estadual Rodolfo de Oliveira">
       <div class="navbar-title">
         <b>Plataforma de Alinhamento Curricular</b>
         <small>3ª Série Ensino Médio — Matriz 2026</small>
@@ -297,6 +311,10 @@
 
   <main class="panel">
     <nav class="tabs" role="tablist" aria-label="Eixos de Articulação Curricular">
+      <button class="tabs-toggle" id="tabsToggle" type="button" aria-expanded="false" aria-label="Escolher eixo">
+        <span class="tt-current"><span class="tt-num">01</span><span class="tt-label">Matriz SAEGO</span></span>
+        <span class="tt-caret">&rsaquo;</span>
+      </button>
       <button class="tab active" data-target="eixo-1" role="tab" aria-selected="true">
         <span class="num">01</span>
         <span class="lbl"><b>Matriz SAEGO</b><span>Avaliação · Seduc-GO</span></span>
@@ -397,15 +415,33 @@
 <script>
   const tabs = document.querySelectorAll('.tab');
   const articles = document.querySelectorAll('.article');
+  const tabsNav = document.querySelector('.tabs');
+  const tabsToggle = document.getElementById('tabsToggle');
+  const ttNum = tabsToggle.querySelector('.tt-num');
+  const ttLabel = tabsToggle.querySelector('.tt-label');
+
   function activate(id){
     tabs.forEach(t=>{
       const on = t.dataset.target===id;
       t.classList.toggle('active',on);
       t.setAttribute('aria-selected',on);
+      if(on){
+        ttNum.textContent = t.querySelector('.num').textContent.trim();
+        ttLabel.textContent = t.querySelector('.lbl b').textContent.trim();
+      }
     });
     articles.forEach(a=>a.classList.toggle('active',a.id===id));
+    // collapse the mobile eixos dropdown after choosing
+    tabsNav.classList.remove('open');
+    tabsToggle.classList.remove('open');
+    tabsToggle.setAttribute('aria-expanded','false');
   }
   tabs.forEach(t=>t.addEventListener('click',()=>activate(t.dataset.target)));
+  tabsToggle.addEventListener('click',()=>{
+    const open = tabsNav.classList.toggle('open');
+    tabsToggle.classList.toggle('open', open);
+    tabsToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
 
   // ---------- VIEW SWITCHER (Início / Matriz / Atividades) ----------
   const viewEls = {

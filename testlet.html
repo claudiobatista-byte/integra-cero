@@ -198,6 +198,8 @@
     margin-top:14px;font-size:13px;font-family:var(--mono);
     color:#8b8470;border-top:1px dashed var(--line);padding-top:12px;
   }
+  .text-card .ex-src{margin-top:14px;font-size:12.5px;color:#8b8470;line-height:1.5}
+  .text-card .ex-src i{font-style:italic}
 
   .q-panel{display:flex;flex-direction:column;gap:14px}
   .q-tabs{display:flex;gap:10px;flex-wrap:wrap}
@@ -223,8 +225,52 @@
   .q-display .q-head{font-family:var(--display);font-size:21px;font-weight:600;color:var(--paper);margin-bottom:14px}
   .q-display .q-stem{font-size:16.5px;color:#a5d6a7;line-height:1.6;margin-bottom:16px}
   .q-display .hint{font-size:14px;color:#81c784;font-style:italic;border-left:3px solid var(--gold);padding-left:12px}
+  .q-opts{display:flex;flex-direction:column;gap:9px;margin:2px 0 16px}
+  .opt{display:flex;gap:11px;align-items:flex-start;text-align:left;cursor:pointer;width:100%;
+    background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#e8f5e9;
+    border-radius:11px;padding:12px 14px;font:inherit;font-size:15.5px;line-height:1.45;transition:.2s ease}
+  .opt:hover{background:rgba(255,255,255,.10);border-color:rgba(200,162,74,.5)}
+  .opt .let{flex:none;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;
+    background:rgba(200,162,74,.18);color:var(--gold);font-family:var(--mono);font-weight:700;font-size:13px}
+  .opt.correct{background:rgba(46,125,50,.38);border-color:#66bb6a;color:#fff}
+  .opt.correct .let{background:#66bb6a;color:#0a3d1a}
+  .opt.wrong{background:rgba(150,40,40,.32);border-color:#e57373}
+  .opt.wrong .let{background:#e57373;color:#3a0a0a}
+  .opt[disabled]{cursor:default}
   .q-fade{animation:fadein .45s ease}
   @keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  /* ---------- DEMO BUTTON + MODAL ---------- */
+  .demo-open{
+    display:inline-flex;align-items:center;gap:10px;cursor:pointer;margin-top:10px;
+    font:inherit;font-weight:700;font-size:17px;background:var(--gold);color:var(--ink);border:none;
+    padding:16px 30px;border-radius:14px;box-shadow:0 14px 34px -10px rgba(200,162,74,.6);
+    transition:transform .2s ease,box-shadow .2s ease;
+  }
+  .demo-open:hover{transform:translateY(-3px);box-shadow:0 20px 42px -12px rgba(200,162,74,.7)}
+  .demo-open::after{content:"→";font-size:20px}
+
+  .modal-overlay{
+    position:fixed;inset:0;z-index:1000;display:none;
+    background:rgba(8,30,16,.72);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);
+    padding:24px;overflow-y:auto;
+  }
+  .modal-overlay.open{display:flex;align-items:flex-start;justify-content:center}
+  .modal{
+    position:relative;width:100%;max-width:1040px;margin:auto;
+    background:linear-gradient(150deg,#1b5e20 0%,#14532d 100%);
+    border:1px solid rgba(200,162,74,.3);border-radius:22px;
+    padding:56px 28px 32px;box-shadow:0 40px 90px rgba(0,0,0,.5);
+    animation:modalIn .35s ease both;
+  }
+  @keyframes modalIn{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}
+  .modal-close{
+    position:absolute;top:16px;right:16px;width:42px;height:42px;cursor:pointer;
+    border:1px solid rgba(255,255,255,.25);border-radius:10px;background:rgba(255,255,255,.08);
+    color:#fff;font-size:24px;line-height:1;display:grid;place-items:center;transition:.2s ease;
+  }
+  .modal-close:hover{background:rgba(255,255,255,.18)}
+  body.modal-on{overflow:hidden}
 
   /* ---------- WHY (benefit cards) ---------- */
   .why-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:34px}
@@ -321,50 +367,68 @@
       <div class="d-arrows">
         <div class="ln">→</div>
         <div class="ln">→</div>
-        <div class="ln">→</div>
       </div>
       <div class="d-q">
-        <div class="q"><div class="num">16</div><span>O que o texto quer dizer no geral?</span></div>
-        <div class="q"><div class="num">17</div><span>Qual o sentido daquela palavra?</span></div>
-        <div class="q"><div class="num">18</div><span>Qual é a opinião do autor?</span></div>
+        <div class="q"><div class="num">16</div><span>Entende-se desse texto que...</span></div>
+        <div class="q"><div class="num">17</div><span>Essa história começa quando...</span></div>
       </div>
     </div>
 
-    <div class="pull"><b>Na Avaliação Diagnóstica SAEGO,</b> o texto "O Álbum de Figurinhas" é o coração de um testlet que alimenta as questões <b>16, 17 e 18</b>.</div>
+    <div class="pull"><b>Na Avaliação Diagnóstica SAEGO,</b> o texto "O Álbum de Figurinhas" é o coração de um testlet que alimenta as questões <b>16 e 17</b>.</div>
   </div>
 </section>
 
 <!-- DEMO INTERATIVO -->
 <section class="demo">
   <div class="wrap reveal">
-    <span class="tag">Veja na prática</span>
+    <span class="tag">Demonstração</span>
     <h2>Um texto, vários olhares</h2>
-    <p class="sub2">Clique em cada questão abaixo e observe como elas mergulham em <b>partes diferentes</b> do mesmo texto. Esse é o segredo do testlet. <em>(Exemplo ilustrativo.)</em></p>
+    <p class="sub2">As questões 16 e 17 da Avaliação Diagnóstica SAEGO partem do mesmo texto — cada uma exige a releitura de <b>partes diferentes</b>.</p>
+    <button class="demo-open" id="demoOpen" type="button">Veja na prática</button>
+  </div>
+</section>
 
+<!-- POP-UP DO DEMO -->
+<div class="modal-overlay" id="demoModal" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-label="O Álbum de Figurinhas — Questões 16 e 17">
+    <button class="modal-close" id="demoClose" type="button" aria-label="Fechar">&times;</button>
     <div class="demo-grid">
       <div class="text-card">
         <span class="doc-tab">TEXTO-BASE</span>
-        <h3>O Canteiro de Dona Lúcia</h3>
+        <h3>O Álbum de Figurinhas</h3>
         <p class="ex-text">
-          <span class="s" data-s="1">Toda tarde, Dona Lúcia regava o pequeno canteiro que cultivava nos fundos de casa.</span>
-          <span class="s" data-s="2">Para ela, cada muda era um pacto silencioso com o futuro: plantava hoje aquilo que só daria sombra daqui a muitos anos.</span>
-          <span class="s" data-s="3">Os vizinhos achavam aquilo um tanto quixotesco — afinal, para que tanto esforço por uma árvore que ela talvez nunca visse crescer?</span>
-          <span class="s" data-s="4">Mas é justamente aí que mora a beleza de quem planta: cuidar do que vem depois de nós talvez seja o gesto mais generoso que existe.</span>
+          <span class="s" data-s="1">A capa do álbum prometia uma viagem no tempo para quem o completasse.</span>
+          <span class="s" data-s="2">Rômulo leu aquilo [...] na banca de revistas.</span>
+          <span class="s" data-s="3">"Puxa! Eu sempre quis viajar no tempo!", pensou.</span>
+          <span class="s" data-s="4">E usou a mesada para comprar o livro e vinte envelopes de figurinhas.</span>
+          <span class="s" data-s="5">Quando abriu o primeiro, seus olhos brilharam: um astronauta, um pirata, um dinossauro, um mapa do tesouro e uma tribo de homens das cavernas.</span>
+          <span class="s" data-s="6">Cada envelope continha cinco figuras de coisas legais de todas as épocas e partes do mundo.</span>
+          <span class="s" data-s="7">O menino rapidamente abriu tudo até formar duas pilhas no tapete do quarto [...].</span>
+          <span class="s" data-s="8">Enfim, chegou o dia em que ele foi à banca e comprou dez envelopes [...]. Eram cinquenta novos cromos [...] todos repetidos.</span>
+          <span class="s" data-s="9">Com essas decepções, o objetivo de completar o álbum foi sendo aos poucos esquecido, e em certo dia ele foi parar dentro da gaveta, debaixo de outras revistas e papéis.</span>
+          <span class="s" data-s="10">Em uma mudança, anos depois, Rômulo não se importou em se desfazer do livro incompleto, colocando-o no lixo junto com outras coisas velhas.</span>
+          <span class="s" data-s="11">Rômulo tornou-se um homem e nunca mais colecionou figurinhas. Mal lembrava que um dia havia se dedicado tanto a isso.</span>
+          <span class="s" data-s="12">Foi por acaso que, muitos anos depois, ele viu o anúncio de venda daquele velho álbum, idêntico ao seu, com a coleção completa.</span>
+          <span class="s" data-s="13">Como já estava em uma idade dada a sentimentos nostálgicos sobre a infância, resolveu comprar – com a desculpa de mostrar ao filho.</span>
+          <span class="s" data-s="14">Quando o pacote chegou pelo correio, ele ficou um pouco envergonhado. [...]</span>
+          <span class="s" data-s="15">Contudo, ao abrir a primeira página, foi surpreendido por um turbilhão de memórias que já o haviam abandonado [...].</span>
+          <span class="s" data-s="16">Ao se dar por satisfeito, fechou o livro com muito cuidado e voltou a admirar a capa.</span>
+          <span class="s" data-s="17">Lá estavam aquelas palavras que o haviam convencido a começar a coleção: "Complete o álbum e faça uma viagem no tempo!"</span>
         </p>
+        <p class="ex-src">RIESEMBERG, L. F. <i>O álbum de figurinhas</i>. Disponível em: https://tinyurl.com/24u7ntdf. Acesso em: 28 set. 2023. (Fragmento).</p>
         <div class="note">↑ O destaque amarelo mostra o trecho que cada questão exige que você releia.</div>
       </div>
 
       <div class="q-panel">
         <div class="q-tabs">
-          <button class="q-tab active" data-q="0">Questão 1</button>
-          <button class="q-tab" data-q="1">Questão 2</button>
-          <button class="q-tab" data-q="2">Questão 3</button>
+          <button class="q-tab active" data-q="0">Questão 16</button>
+          <button class="q-tab" data-q="1">Questão 17</button>
         </div>
         <div class="q-display" id="qDisplay"></div>
       </div>
     </div>
   </div>
-</section>
+</div>
 
 <!-- POR QUE USAR -->
 <section class="block">
@@ -424,25 +488,28 @@
   /* ---------- questions data for the demo ---------- */
   const QUESTIONS = [
     {
-      focus:"TEMA GERAL",
-      head:"Qual é a ideia central do texto?",
-      stem:"O texto, em sua totalidade, defende principalmente a ideia de que...",
-      sentences:[2,4],
-      hint:"Aqui você precisa enxergar o sentido do texto como um todo — junte o início e o desfecho."
+      head:"Entende-se desse texto que",
+      options:[
+        "o livro favoreceu a Rômulo colecionar pedras preciosas.",
+        "o livro foi um incentivo para Rômulo comprar tapetes.",
+        "o livro funcionou como um objeto de venda para Rômulo.",
+        "o livro permitiu uma viagem à infância de Rômulo."
+      ],
+      correct:3,
+      sentences:[13,15],
+      hint:"Releia o reencontro com o álbum: a nostalgia da infância e o turbilhão de memórias."
     },
     {
-      focus:"SENTIDO DE PALAVRA",
-      head:'O que significa "quixotesco"?',
-      stem:'No trecho "achavam aquilo um tanto quixotesco", a palavra em destaque tem o sentido de algo...',
-      sentences:[3],
-      hint:"Não precisa decorar o dicionário: o próprio contexto da frase entrega o sentido."
-    },
-    {
-      focus:"OPINIÃO DO AUTOR",
-      head:"Qual é o posicionamento do autor?",
-      stem:'A expressão "é justamente aí que mora a beleza" revela que o autor...',
+      head:"Essa história começa quando",
+      options:[
+        "Rômulo compra o livro e os envelopes de figurinhas.",
+        "Rômulo torna-se um homem e não coleciona figurinhas.",
+        "Rômulo vai à banca e compra dez envelopes de figurinhas.",
+        "Rômulo vê o anúncio e compra o antigo álbum de figurinhas."
+      ],
+      correct:0,
       sentences:[4],
-      hint:"Procure as marcas de opinião — palavras de valor como 'beleza' e 'mais generoso'."
+      hint:"Procure o fato que dá início à narrativa, lá no primeiro parágrafo."
     }
   ];
 
@@ -452,20 +519,44 @@
 
   function renderQ(i){
     const q = QUESTIONS[i];
-    qDisplay.innerHTML = `
-      <div class="q-fade">
-        <span class="focus">${q.focus}</span>
-        <div class="q-head">${q.head}</div>
-        <div class="q-stem">${q.stem}</div>
-        <div class="hint">${q.hint}</div>
-      </div>`;
-    sentenceEls.forEach(el=>{
+    const opts = q.options.map(function(o,idx){
+      return '<button class="opt" type="button" data-i="'+idx+'"><span class="let">'+"ABCD"[idx]+'</span><span>'+o+'</span></button>';
+    }).join('');
+    qDisplay.innerHTML =
+      '<div class="q-fade">'
+      + '<div class="q-head">'+q.head+'</div>'
+      + '<div class="q-opts">'+opts+'</div>'
+      + '<div class="hint">'+q.hint+'</div>'
+      + '</div>';
+    qDisplay.querySelectorAll('.opt').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        const chosen = +btn.dataset.i;
+        qDisplay.querySelectorAll('.opt').forEach(function(b){
+          b.disabled = true;
+          const bi = +b.dataset.i;
+          if(bi===q.correct) b.classList.add('correct');
+          else if(bi===chosen) b.classList.add('wrong');
+        });
+      });
+    });
+    sentenceEls.forEach(function(el){
       el.classList.toggle('lit', q.sentences.includes(+el.dataset.s));
     });
-    tabs.forEach((t,idx)=>t.classList.toggle('active', idx===i));
+    tabs.forEach(function(t,idx){ t.classList.toggle('active', idx===i); });
   }
-  tabs.forEach((t,idx)=>t.addEventListener('click',()=>renderQ(idx)));
+  tabs.forEach(function(t,idx){ t.addEventListener('click', function(){ renderQ(idx); }); });
   renderQ(0);
+
+  /* ---------- demo modal ---------- */
+  const demoModal = document.getElementById('demoModal');
+  const demoOpen = document.getElementById('demoOpen');
+  const demoClose = document.getElementById('demoClose');
+  function openModal(){ demoModal.classList.add('open'); demoModal.setAttribute('aria-hidden','false'); document.body.classList.add('modal-on'); }
+  function closeModal(){ demoModal.classList.remove('open'); demoModal.setAttribute('aria-hidden','true'); document.body.classList.remove('modal-on'); }
+  demoOpen.addEventListener('click', openModal);
+  demoClose.addEventListener('click', closeModal);
+  demoModal.addEventListener('click', function(e){ if(e.target===demoModal) closeModal(); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeModal(); });
 
   /* ---------- tips accordion ---------- */
   document.querySelectorAll('.tip').forEach(tip=>{

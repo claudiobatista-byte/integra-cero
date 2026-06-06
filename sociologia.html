@@ -68,7 +68,7 @@
   /* DETAIL PANEL */
   .detail{max-height:0;overflow:hidden;opacity:0;background:#fff;border:1px solid rgba(20,83,45,.12);
     border-top:3px solid var(--gold);border-radius:var(--radius);
-    transition:max-height .42s ease,opacity .35s ease,margin .3s ease;margin-top:0;}
+    transition:max-height .42s ease,opacity .35s ease,margin .3s ease;margin-top:0;scroll-margin-top:14px;}
   .detail.open{opacity:1;margin-top:18px}
   .detail-inner{padding:26px 28px}
   .detail-inner h3{font-family:Georgia,serif;color:var(--navy-deep);font-size:1.3rem;letter-spacing:-.2px}
@@ -160,6 +160,7 @@
     renderDetail();
     detail.classList.add('open');
     fit();
+    setTimeout(function(){ detail.scrollIntoView(); }, 90);
   }
   function closeDetail(){
     activeIdx = -1;
